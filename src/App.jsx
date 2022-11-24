@@ -1,9 +1,16 @@
-import './App.css'
+import Cart from './components/Cart/Cart';
+import Layout from './components/Layout/Layout';
+import Products from './components/Shop/Products';
+import { useSelector } from "react-redux";
 
-export default function App() {
+function App() {
+  const showCart = useSelector(state => state.ui.cartIsVisible);
   return (
-    <main>
-      React ⚛️ + Vite ⚡ + Replit 🌀
-    </main>
-  )
+    <Layout>
+      {showCart && <Cart />}
+      <Products />
+    </Layout>
+  );
 }
+
+export default App;
