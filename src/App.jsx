@@ -17,10 +17,6 @@ function App() {
 
   
   useEffect(() => {
-    if(isInitial){
-      isInitial = false;
-      return;
-    }
     const sendCartData = async () => {
       dispatch(uiActions.showNotification({
         status: "pending",
@@ -29,14 +25,9 @@ function App() {
       }));
       
       const response = await fetch("https://food-order-app-42cba-default-rtdb.firebaseio.com/cart.json", {method: "PUT", body: JSON.stringify(cart)});
-    };
 
-    if(!response.ok){
-      dispatch(uiActions.showNotification({
-      status: "error",
-      title: "Error!",
-      message: "Sending data failed."
-    }));
+      if(!response.ok){
+      throw new Error("Sending cart data failed");
     }
 
     dispatch(uiActions.showNotification({
@@ -44,8 +35,21 @@ function App() {
       title: "Success!",
       message: "Sent data successfully"
     }));
+    };
+
+    if(isInitial){
+      isInitial = false;
+      return;
+    }
     
-  }, [cart]);
+    sendCartData().catch(error => {
+      dispatch(uiActions.showNotification({
+      status: "error",
+      title: "Error!",
+      message: "Sending data failed."
+    }));
+    });
+  }, [cart, dispatch]);
   
   return (
     <Fragment>
